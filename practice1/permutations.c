@@ -84,21 +84,25 @@ int* generate_perm(int N)
 /* NULL en case of error                           */
 /***************************************************/
 int** generate_permutations(int n_perms, int N) {
+    int i;
+
     int **permutations = malloc(n_perms * sizeof(int*));
     if (permutations == NULL) {
         exit(EXIT_FAILURE);
     }
 
-    for (int i = 0; i < n_perms; i++) {
-        permutations[i] = generate_perm(N);  // Generar cada permutación
+    for (i = 0; i < n_perms; i++) {
+        permutations[i] = generate_perm(N);  
     }
 
     return permutations;
 }
 
 void free_permutations(int **permutations, int n_perms) {
-    for (int i = 0; i < n_perms; i++) {
-        free(permutations[i]);  // Liberar cada permutación
+    int i;
+
+    for (i = 0; i < n_perms; i++) {
+        free(permutations[i]);  
     }
-    free(permutations);  // Liberar el arreglo de punteros
+    free(permutations);  
 }

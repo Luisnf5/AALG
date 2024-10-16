@@ -4,7 +4,7 @@
 #-----------------------
 
 CC = gcc -ansi -pedantic
-CFLAGS = -Wall
+CFLAGS = -Wall -g
 EXE = exercise1 exercise2 exercise3 exercise4 exercise5
 
 all : $(EXE)
