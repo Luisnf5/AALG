@@ -28,7 +28,7 @@
 /***************************************************/
 int random_num(int inf, int sup)
 {
-  return rand() % (sup + 1 - inf) + inf;
+  return rand() % (sup - inf) + inf;
 }
 
 /***************************************************/
@@ -55,7 +55,7 @@ int* generate_perm(int N)
   perm = (int*)malloc(N * sizeof(int));
 
   for (i=0; i<N; i++){
-    perm[i] = i;
+		perm[i] = i;
   }
 
   for (i=0; i<N; i++){
@@ -88,7 +88,7 @@ int** generate_permutations(int n_perms, int N) {
 
     int **permutations = malloc(n_perms * sizeof(int*));
     if (permutations == NULL) {
-        exit(EXIT_FAILURE);
+        return NULL;
     }
 
     for (i = 0; i < n_perms; i++) {
