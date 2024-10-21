@@ -9,15 +9,6 @@
  *
  */
 
-typedef struct time_aa {
-  int N; /* Input size*/
-  int n_elems; /* total number of elements to be averaged*/
-  double time; /* average clock time*/
-  double average_ob; /* avergae number of times the OB is executed*/
-  int min_ob; /* minimum number of OB executions*/
-  int max_ob; /* maximum number of OB executions*/
-} TIME_AA, *PTIME_AA;
-
 #ifndef TIMES_H
 #define TIMES_H
 

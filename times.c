@@ -13,6 +13,7 @@
 #include "sorting.h"
 #include <stdlib.h>
 #include <time.h>
+#include <stdio.h>
 
 /***************************************************/
 /* Function: average_sorting_time Date:            */
@@ -72,13 +73,20 @@ short average_sorting_time(pfunc_sort metodo, int n_perms,int N, PTIME_AA ptime)
     if (obPerms[i] > max){
       max = obPerms;
     }
-    printf("time: %ld, it: %d", final, i);
+    printf("time: %f , it: %d", final, i);
     printf("obPerms: %d, it: %d", obPerms[i], i);
   }
   ptime->min_ob = min;
   ptime->max_ob = max;
   ptime->time = sumT/n_perms;
   ptime->average_ob = sumOB/n_perms;
+
+  for (i=0; i<n_perms; i++){
+    free(perms[i]);
+  }
+  free(perms);
+  free(obPerms);
+  free(times);
 
   return OK;
 }
@@ -88,11 +96,36 @@ short average_sorting_time(pfunc_sort metodo, int n_perms,int N, PTIME_AA ptime)
 /*                                                 */
 /* Your documentation                              */
 /***************************************************/
-short generate_sorting_times(pfunc_sort method, char* file, 
-                                int num_min, int num_max, 
-                                int incr, int n_perms)
+short generate_sorting_times(pfunc_sort method, char* file, int num_min, int num_max, int incr, int n_perms)
 {
-  /* Your code */
+  PTIME_AA pt = NULL;
+  int i, arr_tam, j;
+
+  if (method == NULL | file == NULL | num_min < 1 | num_max < 1 | num_min > num_max | incr < 1 | n_perms < 1){
+    return ERR;
+  }
+
+  arr_tam = ((num_max - num_min) / incr) + 1;
+
+  pt = (PTIME_AA*) malloc(arr_tam * sizeof(PTIME_AA));
+  if (pt == NULL){
+    return ERR;
+  }
+
+  for (i=0; i<=arr_tam; i++){
+    if (average_sorting_time(method, n_perms, num_min+(incr*i), &pt[i]) == ERR){
+      free(pt);
+      return ERR;
+    }
+  }
+
+  if (save_time_table(file, pt, arr_tam) == ERR){
+    free(pt);
+    return ERR;
+  }
+
+  free(pt);
+  return OK;
 }
 
 /***************************************************/
@@ -102,7 +135,26 @@ short generate_sorting_times(pfunc_sort method, char* file,
 /***************************************************/
 short save_time_table(char* file, PTIME_AA ptime, int n_times)
 {
-  /* your code */
+  int i;
+  FILE *f = NULL;
+
+  if (file == NULL | !ptime | n_times < 1){
+    return ERR;
+  }
+
+  f = fopen(file, "w");
+  if (f == NULL){
+    return ERR;
+  }
+
+  for (i=0; i<n_times; i++){
+    if (fprintf(f, "%d %f %f %d %d\n", ptime[i].N, ptime[i].time, ptime[i].average_ob, ptime[i].max_ob, ptime[i].min_ob) < 0){
+      fclose(f);
+      return ERR;
+    }
+  }
+
+  return OK;
 }
 
 

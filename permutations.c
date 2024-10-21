@@ -52,7 +52,7 @@ int* generate_perm(int N)
   int cambio;
   int ind;
 
-  perm = malloc(N * sizeof(int));
+  perm = (int*)malloc(N * sizeof(int));
 
   for (i=0; i<N; i++){
     perm[i] = i;
