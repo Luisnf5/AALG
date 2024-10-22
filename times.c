@@ -23,7 +23,7 @@
 /***************************************************/
 short average_sorting_time(pfunc_sort metodo, int n_perms,int N, PTIME_AA ptime)
 {
-  int i, min=__INT_MAX__, max=0, sumOB=0;
+  int i, min=__INT_MAX__, max=0, sumOB=0, err_aux;
   float sumT=0;
   int **perms=NULL, *obPerms;
   clock_t start, end;
@@ -57,7 +57,11 @@ short average_sorting_time(pfunc_sort metodo, int n_perms,int N, PTIME_AA ptime)
   for (i=0; i<n_perms; i++){
     start = clock();
 
-    obPerms[i] = metodo(perms[i], 0, N - 1);
+    err_aux = metodo(perms[i], 0, N - 1);
+    if (err_aux == ERR){
+      return ERR;
+    }
+    obPerms[i] = err_aux;
 
     end = clock();
 

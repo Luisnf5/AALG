@@ -28,7 +28,11 @@
 /***************************************************/
 int random_num(int inf, int sup)
 {
-  return rand() % (sup - inf) + inf;
+	if (inf > sup || inf < 0 || sup < 1){
+		return -1;
+	}
+	
+	return rand() % (sup - inf) + inf;
 }
 
 /***************************************************/
@@ -51,8 +55,12 @@ int* generate_perm(int N)
   int i;
   int cambio;
   int ind;
+  int aux;
 
   perm = (int*)malloc(N * sizeof(int));
+  if (perm == NULL){
+	return NULL;
+  }
 
   for (i=0; i<N; i++){
 		perm[i] = i;
@@ -60,7 +68,12 @@ int* generate_perm(int N)
 
   for (i=0; i<N; i++){
     cambio = perm[i];
-    ind = random_num(i, N);
+    aux = random_num(i, N);
+	if (aux == -1){
+		free(perm);
+		return NULL;
+	}
+	ind = aux;
     perm[i] = perm[ind];
     perm[ind] = cambio;
   }
@@ -84,7 +97,8 @@ int* generate_perm(int N)
 /* NULL en case of error                           */
 /***************************************************/
 int** generate_permutations(int n_perms, int N) {
-    int i;
+    int i, j;
+	int *aux;
 
     int **permutations = malloc(n_perms * sizeof(int*));
     if (permutations == NULL) {
@@ -92,14 +106,26 @@ int** generate_permutations(int n_perms, int N) {
     }
 
     for (i = 0; i < n_perms; i++) {
-        permutations[i] = generate_perm(N);  
+        aux = generate_perm(N); 
+		if (aux == NULL){
+			for (j=0; j<i; j++){
+				free(permutations[j]);
+			}
+			free(permutations);
+			return NULL;
+		}
+		permutations[i] = aux; 
     }
 
     return permutations;
 }
 
 void free_permutations(int **permutations, int n_perms) {
-    int i;
+	int i;
+
+	if (permutations == NULL){
+		return;
+	}
 
     for (i = 0; i < n_perms; i++) {
         free(permutations[i]);  

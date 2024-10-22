@@ -35,7 +35,7 @@ int BubbleSort(int* array, int ip, int iu)
             }
         }
     }
-
+ 
     return count;
 }
 
