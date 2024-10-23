@@ -11,6 +11,7 @@
 
 
 #include "sorting.h"
+#include <stdlib.h>
 
 /***************************************************/
 /* Function: SelectSort    Date:                   */
@@ -66,6 +67,77 @@ int BubbleSortFlag(int* array, int ip, int iu)
     }
 
     return count;
+}
+
+int mergesort(int *tabla, int ip, int iu){
+    int imedio;
+
+    if (iu > ip || tabla == NULL || ip < 0 || iu < 0){
+        return ERR;
+    }else if (iu == ip){
+        return 0;
+    }
+
+    imedio = (ip + iu)/2;
+
+    mergesort(tabla, ip, imedio);
+
+    mergesort(tabla, imedio+1, iu);
+
+    return merge(tabla, ip, iu, imedio);
+}
+
+int merge(int *tabla, int ip, int iu, int imedio){
+    int *tAux, i, j, k, ob=0;
+
+    if (iu > ip || tabla == NULL || ip < 0 || iu < 0 || imedio > iu || imedio < ip || imedio < 0){
+        return ERR;
+    }
+
+    tAux = (int*) malloc(((iu-ip)+1) * sizeof(int));
+    if (tAux == NULL){
+        return ERR;
+    }
+
+    //Copiar tabla de ip a iu
+    for (i=ip, j=0; i<=iu; i++, j++){
+        tAux[]
+    }
+
+    i=ip;
+    j=imedio+1;
+    k=iu;
+
+    while(i<=imedio && j<= iu){
+        if (tabla[i] < tabla[j]){
+            tAux[k] = tabla[i];
+            i++;
+            ob++;
+        }else{
+            tAux[k] = tabla[j];
+            j++;
+        }
+        k++;
+    }
+
+    if (i>imedio){
+        while (j<=iu){
+            tAux[k] = tabla[j];
+            j++;
+            k++;
+        }
+    }else if (j>iu){
+        while (i<=imedio){
+            tAux[k] = tabla[i];
+            i++;
+            k++;
+        }
+    }
+
+    //Copiar tAux en tabla entre ip e iu
+
+    free(tAux);
+    return ob;
 }
 
 
