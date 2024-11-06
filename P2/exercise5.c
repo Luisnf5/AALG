@@ -23,7 +23,7 @@
 #include "sorting.h"
 #include "times.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   int i, num_min, num_max, incr, n_perms;
   char nombre[256];
@@ -31,7 +31,8 @@ int main(int argc, char** argv)
 
   srand(time(NULL));
 
-  if (argc != 11) {
+  if (argc != 11)
+  {
     fprintf(stderr, "Error in input parameters:\n\n");
     fprintf(stderr, "%s -num_min <int> -num_max <int> -incr <int>\n", argv[0]);
     fprintf(stderr, "\t\t -numP <int> -outputFile <string> \n");
@@ -47,27 +48,40 @@ int main(int argc, char** argv)
   printf("Practice number 1, section 5\n");
   printf("Done by: your names\n");
   printf("Group: Your group\n");
-  
+
   /* check command line */
-  for(i = 1; i < argc ; i++) {
-    if (strcmp(argv[i], "-num_min") == 0) {
+  for (i = 1; i < argc; i++)
+  {
+    if (strcmp(argv[i], "-num_min") == 0)
+    {
       num_min = atoi(argv[++i]);
-    } else if (strcmp(argv[i], "-num_max") == 0) {
+    }
+    else if (strcmp(argv[i], "-num_max") == 0)
+    {
       num_max = atoi(argv[++i]);
-    } else if (strcmp(argv[i], "-incr") == 0) {
+    }
+    else if (strcmp(argv[i], "-incr") == 0)
+    {
       incr = atoi(argv[++i]);
-    } else if (strcmp(argv[i], "-numP") == 0) {
+    }
+    else if (strcmp(argv[i], "-numP") == 0)
+    {
       n_perms = atoi(argv[++i]);
-    } else if (strcmp(argv[i], "-outputFile") == 0) {
+    }
+    else if (strcmp(argv[i], "-outputFile") == 0)
+    {
       strcpy(nombre, argv[++i]);
-    } else {
+    }
+    else
+    {
       fprintf(stderr, "Wrong paramenter %s\n", argv[i]);
     }
   }
 
   /* compute times */
-  ret = generate_sorting_times(BubbleSortFlag, nombre,num_min, num_max,incr, n_perms);
-  if (ret == ERR) { /* ERR_TIME should be a negative number */
+  ret = generate_sorting_times(mergesort, nombre, num_min, num_max, incr, n_perms);
+  if (ret == ERR)
+  { /* ERR_TIME should be a negative number */
     printf("Error in function generate_sorting_times\n");
     exit(-1);
   }
@@ -75,4 +89,3 @@ int main(int argc, char** argv)
 
   return 0;
 }
-

@@ -98,7 +98,7 @@ int* generate_perm(int N)
 /***************************************************/
 int** generate_permutations(int n_perms, int N) {
     int i, j;
-	int *aux;
+	  	int *aux;
 
     int **permutations = malloc(n_perms * sizeof(int*));
     if (permutations == NULL) {
