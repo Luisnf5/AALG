@@ -15,49 +15,57 @@
 #include "permutations.h"
 #include "sorting.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   int tamano, i, j, ret;
-  int* perm = NULL;
+  int *perm = NULL;
 
   srand(time(NULL));
 
-  if (argc != 3) {
-	fprintf(stderr, "Error in input parameters:\n\n");
+  if (argc != 3)
+  {
+    fprintf(stderr, "Error in input parameters:\n\n");
     fprintf(stderr, "%s -size <int>\n", argv[0]);
     fprintf(stderr, "Where:\n");
     fprintf(stderr, " -size : number of elements in the permutation.\n");
     return 0;
   }
   printf("Practice number 1, section 4\n");
-  printf("Done by: your names\n");
-  printf("Group: Your group\n");
+  printf("Done by: Luis Nuñez and Diego Ruz\n");
+  printf("Group: 1261\n");
 
   /* check command line */
-  for(i = 1; i < argc; i++) {
-    if (strcmp(argv[i], "-size") == 0) {
+  for (i = 1; i < argc; i++)
+  {
+    if (strcmp(argv[i], "-size") == 0)
+    {
       tamano = atoi(argv[++i]);
-    } else {
+    }
+    else
+    {
       fprintf(stderr, "Wrong paramenter %s\n", argv[i]);
     }
   }
 
   perm = generate_perm(tamano);
 
-  if (perm == NULL) { /* error */
+  if (perm == NULL)
+  { /* error */
     printf("Error: Out of memory\n");
     exit(-1);
   }
 
-  ret =BubbleSort(perm, 0, tamano-1);
+  ret = heapsort(perm, 0, tamano - 1);
 
-  if (ret == ERR) {
-    printf("Error: Error in BubbleSort\n");
+  if (ret == ERR)
+  {
+    printf("Error: Error in HeapSort\n");
     free(perm);
     exit(-1);
   }
 
-  for(j = 0; j < tamano; j++) {
+  for (j = 0; j < tamano; j++)
+  {
     printf("%d \t", perm[j]);
   }
   printf("\n");
@@ -66,4 +74,3 @@ int main(int argc, char** argv)
 
   return 0;
 }
-

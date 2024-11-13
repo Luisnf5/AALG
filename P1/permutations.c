@@ -9,7 +9,6 @@
  *
  */
 
-
 #include "permutations.h"
 #include <stdlib.h>
 
@@ -26,13 +25,14 @@
 /* Output:                                         */
 /* int: random number                              */
 /***************************************************/
-int random_num(int inf, int sup)
+int random_num(int inf, int sup) /*CAMBIAR FUNCION*/
 {
-	if (inf > sup || inf < 0 || sup < 1){
-		return -1;
-	}
-	
-	return rand() % (sup - inf) + inf;
+  if (inf > sup || inf < 0 || sup < 1)
+  {
+    return -1;
+  }
+
+  return rand() % (sup - inf) + inf;
 }
 
 /***************************************************/
@@ -48,7 +48,7 @@ int random_num(int inf, int sup)
 /* that contains the permitation                   */
 /* or NULL in case of error                        */
 /***************************************************/
-int* generate_perm(int N)
+int *generate_perm(int N)
 {
   int *perm;
 
@@ -57,23 +57,27 @@ int* generate_perm(int N)
   int ind;
   int aux;
 
-  perm = (int*)malloc(N * sizeof(int));
-  if (perm == NULL){
-	return NULL;
+  perm = (int *)malloc(N * sizeof(int));
+  if (perm == NULL)
+  {
+    return NULL;
   }
 
-  for (i=0; i<N; i++){
-		perm[i] = i;
+  for (i = 0; i < N; i++)
+  {
+    perm[i] = i;
   }
 
-  for (i=0; i<N; i++){
+  for (i = 0; i < N; i++)
+  {
     cambio = perm[i];
     aux = random_num(i, N);
-	if (aux == -1){
-		free(perm);
-		return NULL;
-	}
-	ind = aux;
+    if (aux == -1)
+    {
+      free(perm);
+      return NULL;
+    }
+    ind = aux;
     perm[i] = perm[ind];
     perm[ind] = cambio;
   }
@@ -96,39 +100,47 @@ int* generate_perm(int N)
 /* to each of the permutations                     */
 /* NULL en case of error                           */
 /***************************************************/
-int** generate_permutations(int n_perms, int N) {
-    int i, j;
-	int *aux;
+int **generate_permutations(int n_perms, int N)
+{
+  int i, j;
+  int *aux;
 
-    int **permutations = malloc(n_perms * sizeof(int*));
-    if (permutations == NULL) {
-        return NULL;
+  int **permutations = malloc(n_perms * sizeof(int *));
+  if (permutations == NULL)
+  {
+    return NULL;
+  }
+
+  for (i = 0; i < n_perms; i++)
+  {
+    aux = generate_perm(N);
+    if (aux == NULL)
+    {
+      for (j = 0; j < i; j++)
+      {
+        free(permutations[j]);
+      }
+      free(permutations);
+      return NULL;
     }
+    permutations[i] = aux;
+  }
 
-    for (i = 0; i < n_perms; i++) {
-        aux = generate_perm(N); 
-		if (aux == NULL){
-			for (j=0; j<i; j++){
-				free(permutations[j]);
-			}
-			free(permutations);
-			return NULL;
-		}
-		permutations[i] = aux; 
-    }
-
-    return permutations;
+  return permutations;
 }
 
-void free_permutations(int **permutations, int n_perms) {
-	int i;
+void free_permutations(int **permutations, int n_perms)
+{
+  int i;
 
-	if (permutations == NULL){
-		return;
-	}
+  if (permutations == NULL)
+  {
+    return;
+  }
 
-    for (i = 0; i < n_perms; i++) {
-        free(permutations[i]);  
-    }
-    free(permutations);  
+  for (i = 0; i < n_perms; i++)
+  {
+    free(permutations[i]);
+  }
+  free(permutations);
 }

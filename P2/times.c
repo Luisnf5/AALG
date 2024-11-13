@@ -130,6 +130,7 @@ short generate_sorting_times(pfunc_sort method, char *file, int num_min, int num
 
 	if (method == NULL || file == NULL || num_min < 1 || num_max < 1 || num_min > num_max || incr < 1 || n_perms < 1)
 	{
+		printf("error 1\n");
 		return ERR;
 	}
 	cont = num_min;
@@ -139,6 +140,7 @@ short generate_sorting_times(pfunc_sort method, char *file, int num_min, int num
 	pt = (TIME_AA *)malloc(arr_tam * sizeof(TIME_AA));
 	if (pt == NULL)
 	{
+		printf("error 2\n");
 		return ERR;
 	}
 
@@ -147,6 +149,7 @@ short generate_sorting_times(pfunc_sort method, char *file, int num_min, int num
 		if (average_sorting_time(method, n_perms, cont, &pt[i]) == ERR)
 		{
 			free(pt);
+			printf("error 3\n");
 			return ERR;
 		}
 		cont += incr;
@@ -155,6 +158,7 @@ short generate_sorting_times(pfunc_sort method, char *file, int num_min, int num
 	if (save_time_table(file, pt, arr_tam) == ERR)
 	{
 		free(pt);
+		printf("error 4\n");
 		return ERR;
 	}
 
