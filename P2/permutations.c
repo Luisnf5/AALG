@@ -11,6 +11,7 @@
 
 #include "permutations.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 /***************************************************/
 /* Function: random_num Date:                      */
@@ -27,12 +28,8 @@
 /***************************************************/
 int random_num(int inf, int sup)
 {
-  if (inf > sup || inf < 0 || sup < 1)
-  {
-    return -1;
-  }
-
-  return rand() % (sup - inf) + inf;
+	printf("its me\n");
+	return inf + rand() % (sup - inf + 1);
 }
 
 /***************************************************/
@@ -50,39 +47,31 @@ int random_num(int inf, int sup)
 /***************************************************/
 int *generate_perm(int N)
 {
-  int *perm;
+	int *perm;
 
-  int i;
-  int cambio;
-  int ind;
-  int aux;
+	int i;
+	int cambio;
+	int ind;
+	int aux;
 
-  perm = (int *)malloc(N * sizeof(int));
-  if (perm == NULL)
-  {
-    return NULL;
-  }
+	perm = (int *)malloc(N * sizeof(int));
+	if (perm == NULL)
+	{
+		return NULL;
+	}
 
-  for (i = 1; i <= N; i++)
-  {
-    perm[i] = i;
-  }
+	for (i = 0; i < N; i++)
+	{
+		perm[i] = i + 1;
+	}
 
-  for (i = 0; i < N; i++)
-  {
-    cambio = perm[i];
-    aux = random_num(i, N);
-    if (aux == -1)
-    {
-      free(perm);
-      return NULL;
-    }
-    ind = aux;
-    perm[i] = perm[ind];
-    perm[ind] = cambio;
-  }
+	for (i = 0; i < N; i++)
+	{
+		aux = random_num(i, N - 1);
+		Swap(perm, i, aux);
+	}
 
-  return perm;
+	return perm;
 }
 
 /***************************************************/
@@ -102,45 +91,61 @@ int *generate_perm(int N)
 /***************************************************/
 int **generate_permutations(int n_perms, int N)
 {
-  int i, j;
-  int *aux;
+	int i, j;
+	int *aux;
 
-  int **permutations = malloc(n_perms * sizeof(int *));
-  if (permutations == NULL)
-  {
-    return NULL;
-  }
+	int **permutations = malloc(n_perms * sizeof(int *));
+	if (permutations == NULL)
+	{
+		return NULL;
+	}
 
-  for (i = 0; i < n_perms; i++)
-  {
-    aux = generate_perm(N);
-    if (aux == NULL)
-    {
-      for (j = 0; j < i; j++)
-      {
-        free(permutations[j]);
-      }
-      free(permutations);
-      return NULL;
-    }
-    permutations[i] = aux;
-  }
+	for (i = 0; i < n_perms; i++)
+	{
+		aux = generate_perm(N);
+		if (aux == NULL)
+		{
+			printf("Error en generate_perm\n");
+			for (j = 0; j < i; j++)
+			{
+				free(permutations[j]);
+			}
+			free(permutations);
+			return NULL;
+		}
+		permutations[i] = aux;
+	}
 
-  return permutations;
+	return permutations;
 }
 
 void free_permutations(int **permutations, int n_perms)
 {
-  int i;
+	int i;
 
-  if (permutations == NULL)
-  {
-    return;
-  }
+	if (permutations == NULL)
+	{
+		return;
+	}
 
-  for (i = 0; i < n_perms; i++)
-  {
-    free(permutations[i]);
-  }
-  free(permutations);
+	for (i = 0; i < n_perms; i++)
+	{
+		free(permutations[i]);
+	}
+	free(permutations);
+}
+
+int Swap(int *tabla, int i, int j)
+{
+	int temp;
+
+	printf("tablastart: i: %d, j: %d\n", tabla[i], tabla[j]);
+
+	temp = tabla[i];
+	tabla[i] = tabla[j];
+	tabla[j] = temp;
+
+	printf("tablaend: i: %d, j: %d\n", tabla[i], tabla[j]);
+
+	return 1;
 }
