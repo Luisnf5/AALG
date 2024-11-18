@@ -134,13 +134,10 @@ void free_permutations(int **permutations, int n_perms)
 	free(permutations);
 }
 
-int Swap(int *tabla, int i, int j)
+void Swap(int *tabla, int i, int j)
 {
-	int temp;
-
+    int temp;
 	temp = tabla[i];
-	tabla[i] = tabla[j];
-	tabla[j] = temp;
-
-	return 1;
+    tabla[i] = tabla[j];
+    tabla[j] = temp;
 }

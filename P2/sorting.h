@@ -31,8 +31,8 @@ int mergesort(int *tabla, int ip, int iu);
 int merge(int *tabla, int ip, int iu, int imedio);
 
 int heapsort(int *tabla, int ip, int iu);
-int CrearHeap(int *tabla, int n);
-int OrdenarHeap(int *tabla, int n);
-int Heapify(int *tabla, int n, int i);
+int CrearHeap(int *tabla, int n, int ip);
+int Heapify(int *tabla, int n, int i, int ip);
+void Swap(int *tabla, int i, int j);
 
 #endif

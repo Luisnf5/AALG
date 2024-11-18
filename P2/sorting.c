@@ -216,75 +216,62 @@ int max(int *tabla, int n, int i, int j, int k, int *result)
 
 int heapsort(int *tabla, int ip, int iu)
 {
-	int n;
+    int n = iu - ip + 1;
 
-	n = ip - iu + 1;
-	CrearHeap(tabla, n);
-	OrdenarHeap(tabla, n);
+    if (!tabla || ip < 0 || iu < 0 || ip > iu)
+        return ERR;
 
-	return 0;
+    CrearHeap(tabla, n, ip);
+    OrdenarHeap(tabla, n, ip);
+
+    return 0;
 }
 
-int CrearHeap(int *tabla, int n)
+
+int Heapify(int *tabla, int n, int i, int ip)
 {
-	int i;
+    int izq = 2 * (i - ip) + 1 + ip;
+    int der = 2 * (i - ip) + 2 + ip; 
+    int max = i;
 
-	if (n == 1)
-	{
-		return 0;
-	}
+    if (izq < n && tabla[izq] > tabla[max])
+        max = izq;
 
-	for (i = (n / 2) - 1; i >= 0; i++)
-	{
-		Heapify(tabla, n, i);
-	}
+    if (der < n && tabla[der] > tabla[max])
+        max = der;
+
+    if (max != i)
+    {
+        Swap(tabla, i, max);
+        Heapify(tabla, n, max, ip);
+    }
+
+    return 0;
 }
 
-int OrdenarHeap(int *tabla, int n)
+
+int CrearHeap(int *tabla, int n, int ip)
 {
-	int i;
+    int i;
 
-	for (i = n - 1; i >= 1; i--)
-	{
-		Swap(tabla, 0, i);
-		Heapify(tabla, i, 0);
-	}
+    for (i = (n / 2) - 1 + ip; i >= ip; i--) 
+        Heapify(tabla, n + ip, i, ip);
+
+    return 0;
 }
 
-int Heapify(int *tabla, int n, int i)
+int OrdenarHeap(int *tabla, int n, int ip)
 {
-	int izq, der, indmax;
+    int i;
 
-	izq = 2 * i + 1;
-	der = 2 * i + 2;
-	indmax = i;
+    for (i = n - 1 + ip; i > ip; i--)
+    {
+        Swap(tabla, ip, i);
+        Heapify(tabla, i, ip, ip);
+    }
 
-	while (der <= n)
-	{
-		maxL(tabla, n, i, izq, der, &indmax);
-
-		if (indmax != i)
-		{
-			Swap(tabla, i, indmax);
-			i = indmax;
-		}
-		else
-		{
-			return 0;
-		}
-	}
+    return 0;
 }
 
-int maxL(int *tabla, int n, int i, int j, int k, int *result)
-{
-	if (j < n && tabla[j] > tabla[i])
-	{
-		return j;
-	}
-	if (k < n && tabla[k] > tabla[i])
-	{
-		return k;
-	}
 
-	return i;
-}
+
