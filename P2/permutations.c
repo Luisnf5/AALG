@@ -28,7 +28,6 @@
 /***************************************************/
 int random_num(int inf, int sup)
 {
-	printf("its me\n");
 	return inf + rand() % (sup - inf + 1);
 }
 
@@ -139,13 +138,9 @@ int Swap(int *tabla, int i, int j)
 {
 	int temp;
 
-	printf("tablastart: i: %d, j: %d\n", tabla[i], tabla[j]);
-
 	temp = tabla[i];
 	tabla[i] = tabla[j];
 	tabla[j] = temp;
-
-	printf("tablaend: i: %d, j: %d\n", tabla[i], tabla[j]);
 
 	return 1;
 }

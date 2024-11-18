@@ -216,85 +216,63 @@ int max(int *tabla, int n, int i, int j, int k, int *result)
 
 int heapsort(int *tabla, int ip, int iu)
 {
-	printf("its m1\n");
-	int ob = 0;
-	int i;
-	int n = iu - ip + 1;
+	int n;
 
-	printf("tabla init: ");
-	for (i = ip; i <= iu; i++)
-	{
-		printf("%d ", tabla[i]);
-	}
-	printf("\n\n");
+	n = ip - iu + 1;
+	CrearHeap(tabla, n);
+	OrdenarHeap(tabla, n);
 
-	ob += CrearHeap(tabla, n);
-	ob += OrdenarHeap(tabla, n);
-
-	printf("tabla end: ");
-	for (i = ip; i <= iu; i++)
-	{
-		printf("%d ", tabla[i]);
-	}
-	printf("\n\n");
-
-	return ob;
+	return 0;
 }
 
 int CrearHeap(int *tabla, int n)
 {
-	printf("its m2\n");
-	int i, ob = 0;
+	int i;
 
 	if (n == 1)
 	{
-		return ERR;
+		return 0;
 	}
 
-	for (i = (n / 2) - 1; i >= 0; i--)
+	for (i = (n / 2) - 1; i >= 0; i++)
 	{
-		ob += Heapify(tabla, n, i);
+		Heapify(tabla, n, i);
 	}
-
-	return ob;
 }
 
 int OrdenarHeap(int *tabla, int n)
 {
-	printf("its m3\n");
-	int i, ob = 0;
+	int i;
 
-	for (i = n - 1; i > 0; i--)
+	for (i = n - 1; i >= 1; i--)
 	{
-		ob += Swap(tabla, 0, i);
-		ob += Heapify(tabla, i, 0);
+		Swap(tabla, 0, i);
+		Heapify(tabla, i, 0);
 	}
-
-	return ob;
 }
 
 int Heapify(int *tabla, int n, int i)
 {
-	printf("its m4\n");
-	int ob = 0, indmax;
+	int izq, der, indmax;
 
-	while (2 * i + 2 <= n)
+	izq = 2 * i + 1;
+	der = 2 * i + 2;
+	indmax = i;
+
+	while (der <= n)
 	{
-		ob += max(tabla, n, i, 2 * i + 1, 2 * i + 2, &indmax);
-		printf("indmax: %d\n", indmax);
+		maxL(tabla, n, i, izq, der, &indmax);
 
-		if (indmax == i)
+		if (indmax != i)
 		{
-			break;
+			Swap(tabla, i, indmax);
+			i = indmax;
 		}
 		else
 		{
-			ob += Swap(tabla, i, indmax);
-			i = indmax;
+			return 0;
 		}
 	}
-
-	return ob;
 }
 
 int maxL(int *tabla, int n, int i, int j, int k, int *result)

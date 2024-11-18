@@ -48,6 +48,12 @@ int main(int argc, char **argv)
   }
 
   perm = generate_perm(tamano);
+  printf("tamanio: %d\n", tamano);
+  for (j = 0; j < tamano; j++)
+  {
+    printf("%d \t", perm[j]);
+  }
+  printf("\n");
 
   if (perm == NULL)
   { /* error */
