@@ -83,6 +83,7 @@ int mergesort(int *tabla, int ip, int iu)
 {
 	int imedio;
 	int ob = 0;
+	int err;
 
 	if (iu < ip || tabla == NULL || ip < 0 || iu < 0)
 	{
@@ -95,9 +96,33 @@ int mergesort(int *tabla, int ip, int iu)
 
 	imedio = (ip + iu) / 2;
 
-	ob += mergesort(tabla, ip, imedio);
-	ob += mergesort(tabla, imedio + 1, iu);
-	ob += merge(tabla, ip, iu, imedio);
+	err = mergesort(tabla, ip, imedio);
+	if (err == ERR)
+	{
+		return ERR;
+	}
+	else
+	{
+		ob += err;
+	}
+	err = mergesort(tabla, imedio + 1, iu);
+	if (err == ERR)
+	{
+		return ERR;
+	}
+	else
+	{
+		ob += err;
+	}
+	err = merge(tabla, ip, iu, imedio);
+	if (err == ERR)
+	{
+		return ERR;
+	}
+	else
+	{
+		ob += err;
+	}
 
 	return ob;
 }
@@ -170,108 +195,96 @@ int merge(int *tabla, int ip, int iu, int imedio)
 	return ob;
 }
 
-int max(int *tabla, int n, int i, int j, int k, int *result)
-{
-
-	printf("i: %d, j: %d, k: %d\n", tabla[i], tabla[j], tabla[k]);
-	int ob = 0;
-	if (result == NULL || tabla == NULL || i > n || j > n || k > n)
-	{
-		printf("error\n");
-		return ERR;
-	}
-	if (tabla[i] > tabla[j])
-	{
-		ob++;
-		if (tabla[i] > tabla[k])
-		{
-			ob++;
-			*result = i;
-			return ob;
-		}
-		else
-		{
-			ob++;
-			*result = k;
-			return ob;
-		}
-	}
-	else
-	{
-		ob++;
-		if (tabla[j] > tabla[k])
-		{
-			ob++;
-			*result = j;
-			return ob;
-		}
-		else
-		{
-			ob++;
-			*result = k;
-			return ob;
-		}
-	}
-}
-
 int heapsort(int *tabla, int ip, int iu)
 {
-    int n = iu - ip + 1;
+	int n = iu - ip + 1;
+	int ob = 0;
+	int erraux;
 
-    if (!tabla || ip < 0 || iu < 0 || ip > iu)
-        return ERR;
+	if (!tabla || ip < 0 || iu < 0 || ip > iu)
+		return ERR;
 
-    CrearHeap(tabla, n, ip);
-    OrdenarHeap(tabla, n, ip);
+	erraux = CrearHeap(tabla, n, ip);
+	if (erraux == ERR)
+		return ERR;
+	else
+	{
+		ob += erraux;
+	}
+	erraux = OrdenarHeap(tabla, n, ip);
+	if (erraux == ERR)
+		return ERR;
+	else
+	{
+		ob += erraux;
+	}
 
-    return 0;
+	return ob;
 }
-
 
 int Heapify(int *tabla, int n, int i, int ip)
 {
-    int izq = 2 * (i - ip) + 1 + ip;
-    int der = 2 * (i - ip) + 2 + ip; 
-    int max = i;
+	int izq = 2 * (i - ip) + 1 + ip;
+	int der = 2 * (i - ip) + 2 + ip;
+	int max = i;
+	int ob = 0;
 
-    if (izq < n && tabla[izq] > tabla[max])
-        max = izq;
+	if (!tabla || n <= 0 || ip < 0 || i < ip)
+		return ERR;
 
-    if (der < n && tabla[der] > tabla[max])
-        max = der;
+	if (izq < n && tabla[izq] > tabla[max])
+		max = izq;
 
-    if (max != i)
-    {
-        Swap(tabla, i, max);
-        Heapify(tabla, n, max, ip);
-    }
+	if (der < n && tabla[der] > tabla[max])
+		max = der;
 
-    return 0;
+	ob += 2;
+
+	if (max != i)
+	{
+		Swap(tabla, i, max);
+		ob += Heapify(tabla, n, max, ip);
+	}
+
+	return ob;
 }
-
 
 int CrearHeap(int *tabla, int n, int ip)
 {
-    int i;
+	int i;
+	int ob = 0;
 
-    for (i = (n / 2) - 1 + ip; i >= ip; i--) 
-        Heapify(tabla, n + ip, i, ip);
+	if (!tabla || n <= 0 || ip < 0)
+		return ERR;
 
-    return 0;
+	for (i = (n / 2) - 1 + ip; i >= ip; i--)
+	{
+		int err = Heapify(tabla, n + ip, i, ip);
+		if (err == ERR)
+			return ERR;
+		ob += err;
+	}
+
+	return ob;
 }
 
 int OrdenarHeap(int *tabla, int n, int ip)
 {
-    int i;
+	int i;
+	int ob = 0;
+	int err;
 
-    for (i = n - 1 + ip; i > ip; i--)
-    {
-        Swap(tabla, ip, i);
-        Heapify(tabla, i, ip, ip);
-    }
+	if (!tabla || n <= 0 || ip < 0)
+		return ERR;
 
-    return 0;
+	for (i = n - 1 + ip; i > ip; i--)
+	{
+		Swap(tabla, ip, i);
+		err = Heapify(tabla, i, ip, ip);
+		if (err == ERR)
+			return ERR;
+		ob += err;
+	}
+
+	return ob;
 }
-
-
-

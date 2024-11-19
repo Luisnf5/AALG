@@ -48,12 +48,6 @@ int main(int argc, char **argv)
   }
 
   perm = generate_perm(tamano);
-  printf("tamanio: %d\n", tamano);
-  for (j = 0; j < tamano; j++)
-  {
-    printf("%d \t", perm[j]);
-  }
-  printf("\n");
 
   if (perm == NULL)
   { /* error */
@@ -61,7 +55,7 @@ int main(int argc, char **argv)
     exit(-1);
   }
 
-  ret = heapsort(perm, 0, tamano - 1);
+  ret = mergesort(perm, 0, tamano - 1);
 
   if (ret == ERR)
   {
