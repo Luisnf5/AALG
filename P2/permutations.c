@@ -26,11 +26,18 @@
 /* Output:                                         */
 /* int: random number                              */
 /***************************************************/
-int random_num(int inf, int sup)
-{
-	return inf + rand() % (sup - inf + 1);
-}
 
+int random_num(int inf, int sup) {
+    if (inf > sup) {
+        int temp = inf;
+        inf = sup;
+        sup = temp;
+    }
+    int range = sup - inf + 1;
+    int rand_num = rand();
+    int scaled = (int)((double)rand_num / ((double)RAND_MAX + 1) * range);
+    return inf + scaled;
+}
 /***************************************************/
 /* Function: generate_perm Date:                   */
 /* Authors:                                        */
