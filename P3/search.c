@@ -92,7 +92,7 @@ void free_dictionary(PDICT pdict)
 
 int insert_dictionary(PDICT pdict, int key)
 {
-	int i;
+	int i, ob = 0;
 
 	if (pdict == NULL)
 	{
@@ -106,23 +106,26 @@ int insert_dictionary(PDICT pdict, int key)
 		while (i >= 0 && pdict->table[i] > key)
 		{
 			pdict->table[i + 1] = pdict->table[i];
+			ob++;
 			i--;
 		}
 		pdict->table[i + 1] = key;
+		ob++;
 		pdict->n_data++;
 	}
 	else
 	{
 		pdict->table[pdict->n_data] = key;
+		ob++;
 		pdict->n_data++;
 	}
 
-	return 0;
+	return ob;
 }
 
 int massive_insertion_dictionary(PDICT pdict, int *keys, int n_keys)
 {
-	int i, j;
+	int i, j, ob = 0;
 	if (pdict == NULL)
 	{
 		return ERR;
@@ -140,9 +143,11 @@ int massive_insertion_dictionary(PDICT pdict, int *keys, int n_keys)
 			while (j >= 0 && pdict->table[j] > keys[i])
 			{
 				pdict->table[j + 1] = pdict->table[j];
+				ob++;
 				j--;
 			}
 			pdict->table[j + 1] = keys[i];
+			ob++;
 			pdict->n_data++;
 		}
 	}
@@ -151,6 +156,7 @@ int massive_insertion_dictionary(PDICT pdict, int *keys, int n_keys)
 		for (i = 0; i < n_keys; i++)
 		{
 			pdict->table[pdict->n_data] = keys[i];
+			ob++;
 			pdict->n_data++;
 		}
 	}
@@ -160,18 +166,30 @@ int massive_insertion_dictionary(PDICT pdict, int *keys, int n_keys)
 
 int search_dictionary(PDICT pdict, int key, int *ppos, pfunc_search method)
 {
+	int err, ob = 0;
+
 	if (pdict == NULL || method == NULL || ppos == NULL)
 	{
 		return ERR;
 	}
 
-	return method(pdict->table, 0, pdict->n_data - 1, key, ppos);
+	err = method(pdict->table, 0, pdict->n_data - 1, key, ppos);
+	if (err == ERR)
+	{
+		return ERR;
+	}
+	else
+	{
+		ob += err;
+	}
+
+	return ob;
 }
 
 /* Search functions of the Dictionary ADT */
 int bin_search(int *table, int F, int L, int key, int *ppos)
 {
-	int m;
+	int m, ob = 0;
 
 	if (table == NULL || F > L || ppos == NULL || F < 0 || L < 0)
 	{
@@ -182,11 +200,12 @@ int bin_search(int *table, int F, int L, int key, int *ppos)
 
 	while (F <= L)
 	{
+		ob++;
 		m = (F + L) / 2;
 		if (table[m] == key)
 		{
 			*ppos = m;
-			return 0;
+			break;
 		}
 		if (table[m] < key)
 		{
@@ -198,12 +217,12 @@ int bin_search(int *table, int F, int L, int key, int *ppos)
 		}
 	}
 
-	return 0;
+	return ob;
 }
 
 int lin_search(int *table, int F, int L, int key, int *ppos)
 {
-	int i;
+	int i, ob = 0;
 
 	if (table == NULL || F > L || ppos == NULL || F < 0 || L < 0)
 	{
@@ -214,18 +233,20 @@ int lin_search(int *table, int F, int L, int key, int *ppos)
 
 	for (i = F; i <= L; i++)
 	{
+		ob++;
 		if (table[i] == key)
 		{
 			*ppos = i;
+			break;
 		}
 	}
 
-	return 0;
+	return ob;
 }
 
 int lin_auto_search(int *table, int F, int L, int key, int *ppos)
 {
-	int i, aux;
+	int i, aux, ob = 0;
 
 	if (table == NULL || F > L || ppos == NULL || F < 0 || L < 0)
 	{
@@ -236,6 +257,7 @@ int lin_auto_search(int *table, int F, int L, int key, int *ppos)
 
 	for (i = F; i <= L; i++)
 	{
+		ob++;
 		if (table[i] == key)
 		{
 			*ppos = i;
@@ -245,8 +267,9 @@ int lin_auto_search(int *table, int F, int L, int key, int *ppos)
 				table[i - 1] = table[i];
 				table[i] = aux;
 			}
+			break;
 		}
 	}
 
-	return 0;
+	return ob;
 }
