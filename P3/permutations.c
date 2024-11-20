@@ -27,16 +27,19 @@
 /* int: random number                              */
 /***************************************************/
 
-int random_num(int inf, int sup) {
-    if (inf > sup) {
-        int temp = inf;
-        inf = sup;
-        sup = temp;
-    }
-    int range = sup - inf + 1;
-    int rand_num = rand();
-    int scaled = (int)((double)rand_num / ((double)RAND_MAX + 1) * range);
-    return inf + scaled;
+int random_num(int inf, int sup)
+{
+	int temp, rand_num, scaled, range;
+	if (inf > sup)
+	{
+		temp = inf;
+		inf = sup;
+		sup = temp;
+	}
+	range = sup - inf + 1;
+	rand_num = rand();
+	scaled = (int)((double)rand_num / ((double)RAND_MAX + 1) * range);
+	return inf + scaled;
 }
 /***************************************************/
 /* Function: generate_perm Date:                   */
@@ -56,8 +59,6 @@ int *generate_perm(int N)
 	int *perm;
 
 	int i;
-	int cambio;
-	int ind;
 	int aux;
 
 	perm = (int *)malloc(N * sizeof(int));
@@ -143,8 +144,8 @@ void free_permutations(int **permutations, int n_perms)
 
 void Swap(int *tabla, int i, int j)
 {
-    int temp;
+	int temp;
 	temp = tabla[i];
-    tabla[i] = tabla[j];
-    tabla[j] = temp;
+	tabla[i] = tabla[j];
+	tabla[j] = temp;
 }

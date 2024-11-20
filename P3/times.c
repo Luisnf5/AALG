@@ -206,8 +206,155 @@ short save_time_table(char *file, PTIME_AA ptime, int n_times)
 
 short generate_search_times(pfunc_search method, pfunc_key_generator generator, int order, char *file, int num_min, int num_max, int incr, int n_times)
 {
+	TIME_AA *pt = NULL;
+	int i, arr_tam, cont = 0;
+
+	if (method == NULL || generator == NULL || file == NULL || num_min < 1 || num_max < 1 || num_min > num_max || incr < 1 || n_times < 1)
+	{
+		return ERR;
+	}
+
+	cont = num_min;
+
+	arr_tam = ((num_max - num_min) / incr) + 1;
+
+	pt = (TIME_AA *)malloc(arr_tam * sizeof(TIME_AA));
+	if (pt == NULL)
+	{
+		return ERR;
+	}
+
+	for (i = 0; i < arr_tam; i++)
+	{
+		if (average_search_time(method, generator, order, cont, n_times, &pt[i]) == ERR)
+		{
+			free(pt);
+			return ERR;
+		}
+		cont += incr;
+		system("clear");
+		printf("Completado: %.2f %\n", i * (float)100 / arr_tam);
+	}
+
+	if (save_time_table(file, pt, arr_tam) == ERR)
+	{
+		free(pt);
+		return ERR;
+	}
+
+	free(pt);
+	return OK;
 }
 
 short average_search_time(pfunc_search metodo, pfunc_key_generator generator, int order, int N, int n_times, PTIME_AA ptime)
 {
+	PDICT dict = NULL;
+	int *perm, err, **ntimes_N, i, j, pos, tot_ob = 0, it_ob = 0;
+	double tot_time = 0;
+	clock_t start, end;
+
+	if (metodo == NULL || generator == NULL || N < 1 || n_times < 1 || ptime == NULL)
+	{
+		return ERR;
+	}
+
+	dict = init_dictionary(N, order);
+	if (dict == NULL)
+	{
+		return ERR;
+	}
+
+	perm = generate_perm(N);
+
+	err = massive_insertion_dictionary(dict, perm, N);
+	if (err == ERR)
+	{
+		free_dictionary(dict);
+		return ERR;
+	}
+
+	ntimes_N = (int **)malloc(n_times * sizeof(int *));
+	if (ntimes_N == NULL)
+	{
+		free_dictionary(dict);
+		return ERR;
+	}
+
+	for (i = 0; i < n_times; i++)
+	{
+		ntimes_N[i] = (int *)malloc(N * sizeof(int));
+		if (ntimes_N[i] == NULL)
+		{
+			for (j = 0; j < i; j++)
+			{
+				free(ntimes_N[j]);
+			}
+			free(ntimes_N);
+			free_dictionary(dict);
+			return ERR;
+		}
+	}
+
+	for (i = 0; i < n_times; i++)
+	{
+		generator(ntimes_N[i], N, N);
+	}
+
+	ptime->N = N;
+	ptime->n_elems = n_times;
+	ptime->min_ob = __INT_MAX__;
+	ptime->max_ob = 0;
+	ptime->time = 0;
+
+	for (i = 0; i < n_times; i++)
+	{
+		for (j = 0; j < N; j++)
+		{
+			it_ob = 0;
+			start = clock();
+			err = search_dictionary(dict, ntimes_N[i][j], &pos, metodo);
+			end = clock();
+			tot_time += ((double)(end - start)) / CLOCKS_PER_SEC;
+			if (err == ERR)
+			{
+				for (j = 0; j < i; j++)
+				{
+					free(ntimes_N[j]);
+				}
+				free(ntimes_N);
+				free_dictionary(dict);
+				return ERR;
+			}
+			else
+			{
+				it_ob += err;
+			}
+			if (pos == NOT_FOUND)
+			{
+				printf("KEY NOT FOUND IN IT i(n_time):%d j(N):%d\n", i, j);
+			}
+			if (it_ob > ptime->max_ob)
+			{
+				ptime->max_ob = it_ob;
+			}
+			if (it_ob < ptime->min_ob)
+			{
+				ptime->min_ob = it_ob;
+			}
+			tot_ob += it_ob;
+		}
+	}
+
+	ptime->average_ob = (double)tot_ob / n_times;
+	ptime->time = (double)tot_time / n_times;
+
+	for (i = 0; i < n_times; i++)
+	{
+		free(ntimes_N[i]);
+	}
+	free(ntimes_N);
+	free(perm);
+	free_dictionary(dict);
+
+	return OK;
 }
