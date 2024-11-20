@@ -153,6 +153,8 @@ short generate_sorting_times(pfunc_sort method, char *file, int num_min, int num
 			return ERR;
 		}
 		cont += incr;
+		system("clear");
+		printf("Completado: %f %\n", i * (float)100 / arr_tam);
 	}
 
 	if (save_time_table(file, pt, arr_tam) == ERR)
