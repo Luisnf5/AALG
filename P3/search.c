@@ -19,10 +19,10 @@
  *
  *  Description: Receives the number of keys to generate in the n_keys
  *               parameter. The generated keys go from 1 to max. The
- * 				 keys are returned in the keys parameter which must be 
+ * 				 keys are returned in the keys parameter which must be
  *				 allocated externally to the function.
  */
-  
+
 /**
  *  Function: uniform_key_generator
  *               This function generates all keys from 1 to max in a sequential
@@ -30,72 +30,223 @@
  */
 void uniform_key_generator(int *keys, int n_keys, int max)
 {
-  int i;
+	int i;
 
-  for(i = 0; i < n_keys; i++) keys[i] = 1 + (i % max);
+	for (i = 0; i < n_keys; i++)
+		keys[i] = 1 + (i % max);
 
-  return;
+	return;
 }
 
 /**
  *  Function: potential_key_generator
  *               This function generates keys following an approximately
- *               potential distribution. The smaller values are much more 
+ *               potential distribution. The smaller values are much more
  *               likely than the bigger ones. Value 1 has a 50%
  *               probability, value 2 a 17%, value 3 the 9%, etc.
  */
 void potential_key_generator(int *keys, int n_keys, int max)
 {
-  int i;
+	int i;
 
-  for(i = 0; i < n_keys; i++) 
-  {
-    keys[i] = .5+max/(1 + max*((double)rand()/(RAND_MAX)));
-  }
+	for (i = 0; i < n_keys; i++)
+	{
+		keys[i] = .5 + max / (1 + max * ((double)rand() / (RAND_MAX)));
+	}
 
-  return;
+	return;
 }
 
-PDICT init_dictionary (int size, char order)
+PDICT init_dictionary(int size, char order)
 {
-	/* your code */
+	PDICT pdict;
+
+	pdict = (PDICT)malloc(sizeof(DICT));
+
+	if (pdict == NULL)
+		return NULL;
+
+	pdict->size = size;
+	pdict->n_data = 0;
+	pdict->order = order;
+	pdict->table = (int *)malloc(size * sizeof(int));
+
+	if (pdict->table == NULL)
+	{
+		free(pdict);
+		return NULL;
+	}
+
+	return pdict;
 }
 
 void free_dictionary(PDICT pdict)
 {
-	/* your code */
+	if (pdict != NULL)
+	{
+		if (pdict->table != NULL)
+			free(pdict->table);
+		free(pdict);
+	}
 }
 
 int insert_dictionary(PDICT pdict, int key)
 {
-	/* your code */
+	int i;
+
+	if (pdict == NULL)
+	{
+		return ERR;
+	}
+	if (pdict->n_data == pdict->size)
+		return ERR;
+	if (pdict->order == SORTED)
+	{
+		i = pdict->n_data - 1;
+		while (i >= 0 && pdict->table[i] > key)
+		{
+			pdict->table[i + 1] = pdict->table[i];
+			i--;
+		}
+		pdict->table[i + 1] = key;
+		pdict->n_data++;
+	}
+	else
+	{
+		pdict->table[pdict->n_data] = key;
+		pdict->n_data++;
+	}
+
+	return 0;
 }
 
-int massive_insertion_dictionary (PDICT pdict,int *keys, int n_keys)
+int massive_insertion_dictionary(PDICT pdict, int *keys, int n_keys)
 {
-	/* your code */
+	int i, j;
+	if (pdict == NULL)
+	{
+		return ERR;
+	}
+	if (pdict->n_data + n_keys > pdict->size)
+	{
+		return ERR;
+	}
+
+	if (pdict->order == SORTED)
+	{
+		for (i = 0; i < n_keys; i++)
+		{
+			j = pdict->n_data - 1;
+			while (j >= 0 && pdict->table[j] > keys[i])
+			{
+				pdict->table[j + 1] = pdict->table[j];
+				j--;
+			}
+			pdict->table[j + 1] = keys[i];
+			pdict->n_data++;
+		}
+	}
+	else
+	{
+		for (i = 0; i < n_keys; i++)
+		{
+			pdict->table[pdict->n_data] = keys[i];
+			pdict->n_data++;
+		}
+	}
+
+	return 0;
 }
 
 int search_dictionary(PDICT pdict, int key, int *ppos, pfunc_search method)
 {
-	/* your code */
-}
+	if (pdict == NULL || method == NULL || ppos == NULL)
+	{
+		return ERR;
+	}
 
+	return method(pdict->table, 0, pdict->n_data - 1, key, ppos);
+}
 
 /* Search functions of the Dictionary ADT */
-int bin_search(int *table,int F,int L,int key, int *ppos)
+int bin_search(int *table, int F, int L, int key, int *ppos)
 {
-	/* your code */
+	int m;
+
+	if (table == NULL || F > L || ppos == NULL || F < 0 || L < 0)
+	{
+		return ERR;
+	}
+
+	*ppos = NOT_FOUND;
+
+	while (F <= L)
+	{
+		m = (F + L) / 2;
+		if (table[m] == key)
+		{
+			*ppos = m;
+			return 0;
+		}
+		if (table[m] < key)
+		{
+			F = m + 1;
+		}
+		else
+		{
+			L = m - 1;
+		}
+	}
+
+	return 0;
 }
 
-int lin_search(int *table,int F,int L,int key, int *ppos)
+int lin_search(int *table, int F, int L, int key, int *ppos)
 {
-	/* your code */
+	int i;
+
+	if (table == NULL || F > L || ppos == NULL || F < 0 || L < 0)
+	{
+		return ERR;
+	}
+
+	*ppos = NOT_FOUND;
+
+	for (i = F; i <= L; i++)
+	{
+		if (table[i] == key)
+		{
+			*ppos = i;
+		}
+	}
+
+	return 0;
 }
 
-int lin_auto_search(int *table,int F,int L,int key, int *ppos)
+int lin_auto_search(int *table, int F, int L, int key, int *ppos)
 {
-	/* your code */
+	int i, aux;
+
+	if (table == NULL || F > L || ppos == NULL || F < 0 || L < 0)
+	{
+		return ERR;
+	}
+
+	*ppos = NOT_FOUND;
+
+	for (i = F; i <= L; i++)
+	{
+		if (table[i] == key)
+		{
+			*ppos = i;
+			if (i > F)
+			{
+				aux = table[i - 1];
+				table[i - 1] = table[i];
+				table[i] = aux;
+			}
+		}
+	}
+
+	return 0;
 }
-
-
