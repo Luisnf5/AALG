@@ -306,11 +306,12 @@ short average_search_time(pfunc_search metodo, pfunc_key_generator generator, in
 	ptime->max_ob = 0;
 	ptime->time = 0;
 
+	it_ob = 0;
 	for (i = 0; i < n_times; i++)
 	{
+
 		for (j = 0; j < N; j++)
 		{
-			it_ob = 0;
 			start = clock();
 			err = search_dictionary(dict, ntimes_N[i][j], &pos, metodo);
 			end = clock();
@@ -327,26 +328,25 @@ short average_search_time(pfunc_search metodo, pfunc_key_generator generator, in
 			}
 			else
 			{
-				it_ob += err;
+				tot_ob += err;
 			}
 			if (pos == NOT_FOUND)
 			{
 				printf("KEY NOT FOUND IN IT i(n_time):%d j(N):%d\n", i, j);
 			}
-			if (it_ob > ptime->max_ob)
+			if (err > ptime->max_ob)
 			{
-				ptime->max_ob = it_ob;
+				ptime->max_ob = err;
 			}
-			if (it_ob < ptime->min_ob)
+			if (err < ptime->min_ob)
 			{
-				ptime->min_ob = it_ob;
+				ptime->min_ob = err;
 			}
-			tot_ob += it_ob;
 		}
 	}
 
-	ptime->average_ob = (double)tot_ob / n_times;
-	ptime->time = (double)tot_time / n_times;
+	ptime->average_ob = (double)tot_ob / n_times / N;
+	ptime->time = (double)tot_time / n_times / N;
 
 	for (i = 0; i < n_times; i++)
 	{
